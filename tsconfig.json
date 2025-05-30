@@ -8,8 +8,8 @@
     "strict": true,
     "skipLibCheck": true,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "."
   },
-  "include": ["src", "src/routes/index.ts"],
+  "include": ["src/**/*", "api/**/*"],
   "exclude": ["node_modules"]
 }

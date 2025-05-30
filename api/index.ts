@@ -1,19 +1,19 @@
 import express from 'express';
 import serverless from 'serverless-http';
-import dotenv from 'dotenv';
-import sequelize  from '../src/database';
 import router from '../src/routes';
-
-dotenv.config();
+import sequelize from '../src/database';
 
 const app = express();
 
 app.use(express.json());
 app.use('/api', router);
 
-// Conexão com o banco (preferencialmente remoto)
 sequelize.sync().then(() => {
-  console.log('✅ Banco sincronizado na Vercel');
+  console.log('✅ Banco conectado e sincronizado');
 });
 
-export const handler = serverless(app);
+// Para rodar local com `vercel dev`:
+module.exports = app;
+
+// Para deploy na Vercel (serverless):
+// module.exports = serverless(app);
