@@ -6,12 +6,9 @@
       "use": "@vercel/node"
     }
   ],
-  "functions": {
-    "api/index.ts": {
-      "external": ["pg", "pg-types"]
-    }
-  },
   "routes": [
+
+    { "src": "/api/(.*)", "dest": "api/index.ts" },
     { "src": "/(.*)", "dest": "api/index.ts" }
   ]
 }

@@ -1,0 +1,65 @@
+// prisma/schema.prisma
+
+generator client {
+  provider      = "prisma-client-js"
+  // Para Vercel, é bom especificar os binários do engine se houver problemas no deploy.
+  // Amazon Linux 2 é comum na Vercel. "native" é para seu ambiente local.
+  binaryTargets = ["native", "rhel-openssl-1.0.x"] 
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // shadowDatabaseUrl = env("SHADOW_DATABASE_URL") // Necessário se usar Prisma Migrate extensivamente
+}
+
+model Pessoas {
+  id          Int           @id @default(autoincrement())
+  nome        String        @db.VarChar(255)
+  email       String        @unique @db.VarChar(255)
+  telefone    String        @db.VarChar(255) // Mantenha String? se puder ser nulo
+  sobre       String                          // Mantenha String? se puder ser nulo
+  createdAt   DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime      @updatedAt @db.Timestamptz(6)
+
+  Experiencia Experiencia[]
+  Formacaos   Formacaos[]
+  Habilidades Habilidades[]
+}
+
+model Experiencia {
+  id        Int      @id @default(autoincrement())
+  empresa   String?  @db.VarChar(255)
+  cargo     String?  @db.VarChar(255)
+  descricao String?
+  inicio    String?  @db.VarChar(255)
+  fim       String?  @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamptz(6) // Sugestão: adicionar default
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)      // Sugestão: adicionar @updatedAt
+  pessoaId  Int?
+
+  Pessoas   Pessoas? @relation(fields: [pessoaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Formacaos {
+  id           Int      @id @default(autoincrement())
+  instituicao  String?  @db.VarChar(255)
+  curso        String?  @db.VarChar(255)
+  inicio       String?  @db.VarChar(255)
+  fim          String?  @db.VarChar(255)
+  createdAt    DateTime @default(now()) @db.Timestamptz(6) // Sugestão: adicionar default
+  updatedAt    DateTime @updatedAt @db.Timestamptz(6)      // Sugestão: adicionar @updatedAt
+  pessoaId     Int?
+
+  Pessoas      Pessoas? @relation(fields: [pessoaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Habilidades {
+  id        Int      @id @default(autoincrement())
+  titulo    String?  @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamptz(6) // Sugestão: adicionar default
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)      // Sugestão: adicionar @updatedAt
+  pessoaId  Int?
+
+  Pessoas   Pessoas? @relation(fields: [pessoaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
